@@ -57,5 +57,5 @@ reading_books_timer/
 - CSV やグラフへのセッション履歴エクスポート
 - GUI のテーマやアイコンカスタマイズ（`assets/` フォルダ活用）
 
-## ライセンス
-- ライセンス未設定。公開前に利用条件を明記してください。
+## ライセンス\n- MIT License ([LICENSE](LICENSE))
+
