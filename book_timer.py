@@ -1,5 +1,9 @@
 ﻿import tkinter as tk
+from tkinter import font as tkfont
 from datetime import datetime
+
+DEFAULT_WIDTH = 420
+DEFAULT_HEIGHT = 220
 
 
 def calculate_pages(start_time: str, end_time: str, start_page: int, end_page: int) -> str:
@@ -54,20 +58,42 @@ print(f"Start {start_time} / End {end_time} / Pages {start_page}->{end_page}")
 # Tkinter window setup
 root = tk.Tk()
 root.title("Reading Timer")
-root.geometry("420x220")
-root.resizable(False, False)
+root.geometry(f"{DEFAULT_WIDTH}x{DEFAULT_HEIGHT}")
+root.minsize(320, 180)
+root.resizable(True, True)
+
+info_font = tkfont.Font(family="Helvetica", size=12)
+progress_font = tkfont.Font(family="Helvetica", size=14)
 
 info_frame = tk.Frame(root)
 info_frame.pack(pady=(20, 10))
 
-time_label = tk.Label(info_frame, text=f"Start {start_time} / End {end_time}", font=("Helvetica", 12))
+time_label = tk.Label(info_frame, text=f"Start {start_time} / End {end_time}", font=info_font)
 time_label.pack()
 
-page_label = tk.Label(info_frame, text=f"Pages {start_page} -> {end_page}", font=("Helvetica", 12))
+page_label = tk.Label(info_frame, text=f"Pages {start_page} -> {end_page}", font=info_font)
 page_label.pack()
 
-progress_label = tk.Label(root, text="Calculating progress...", font=("Helvetica", 14), wraplength=360, justify="center")
+progress_label = tk.Label(root, text="Calculating progress...", font=progress_font, wraplength=360, justify="center")
 progress_label.pack(pady=20)
+
+def adjust_layout(event=None):
+    width = max(root.winfo_width(), 1)
+    height = max(root.winfo_height(), 1)
+    width_scale = width / DEFAULT_WIDTH
+    height_scale = height / DEFAULT_HEIGHT
+    scale = min(width_scale, height_scale)
+
+    def scaled_size(base_size: int, minimum: int) -> int:
+        return max(int(round(base_size * scale)), minimum)
+
+    info_font.configure(size=scaled_size(12, 9))
+    progress_font.configure(size=scaled_size(14, 11))
+    progress_label.config(wraplength=max(int(width * 0.85), 200))
+
+
+root.bind("<Configure>", adjust_layout)
+root.after(0, adjust_layout)
 
 update_progress()
 
